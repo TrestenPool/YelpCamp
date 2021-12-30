@@ -1,32 +1,30 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title><%= camp.title %> </title>
-</head>
-<body>
-  <h1><%= camp.title %> </h1>
-  <h2><%= camp.location %> </h2>
+<% layout('layouts/boilerplate') %> 
+<div class="row">
+  <div class="col-6 offset-3">
+    <div class="card">
+      <!-- Image -->
+      <img src="<%= camp.image %> " class="card-img-top" alt="...">
 
-  <!-- Edit button -->
-  <form action="/campgrounds/<%= camp._id %>/edit ">
-    <button>Edit campground</button>
-  </form>
+      <!-- Title and Description -->
+      <div class="card-body">
+        <h5 class="card-title"><%= camp.title %></h5>
+        <p class="card-text"><%= camp.description %></p>
+      </div>
 
-  <!-- Go back to all campgrounds index -->
-  <footer>
-  <form action="/campgrounds">
-    <button>All Campgrounds</button>
-  </form>
+      <!-- list of items in the card -->
+      <ul class="list-group list-group-flush">
+        <li class="list-group-item text-muted"><%= camp.location %></li>
+        <li class="list-group-item">$<%= camp.price %>/night</li>
+      </ul>
 
-  <!-- Delete campground button -->
-  <div>
-    <form action="/campgrounds/<%= camp._id %>?_method=DELETE" method="POST">
-      <button>Delete</button>
-    </form>
+      <!-- Edit and Delete button -->
+      <div class="card-body">
+        <a class="card-link btn btn-info" href="/campgrounds/<%= camp._id %>/edit">Edit</a>
+        <form class="d-inline" action="/campgrounds/<%= camp._id %>?_method=DELETE" method="POST">
+          <button class="btn btn-danger">Delete</button>
+        </form>
+      </div>
+
+    </div>
   </div>
-  
-  </body>
-</html>
+</div>

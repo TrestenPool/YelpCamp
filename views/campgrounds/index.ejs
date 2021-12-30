@@ -1,23 +1,29 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Index Page</title>
-</head>
-<body>
+  <% layout('layouts/boilerplate') %> 
   <h1>Index Page</h1>
-
-  <div>
-  <a href="/campgrounds/new">Add Campground</a>
-  </div>
-
   <!-- list the campgrounds -->
   <ul>
     <% for(camp of campgrounds) { %>
-    <li> <a href="/campgrounds/<%= camp._id %> "><%= camp.title %> </a> </li> 
+      <div class="card">
+        <div class="row">
+          <!-- card image -->
+          <div class="col-md-4">
+            <img src="<%= camp.image %> " alt="" class="img-fluid">
+          </div>
+          
+          <!-- rest to fill -->
+          <div class="col-mg-8">
+            <div class="card-body">
+              <h5 class="card-title"><%= camp.title %> </h5>
+              <p class="card-text"><%= camp.description %> </p>
+              <p class="card-text">
+                <small class="text-muted"><%= camp.location %> </small>
+              </p>
+              <a href="/campgrounds/<%= camp._id %> " class="btn btn-primary">View <%= camp.title %> </a>
+            </div>
+          </div>
+
+        </div> <!-- End of row-->
+      </div> <!-- End of card-->
     <% } %>
+
   </ul>
-</body>
-</html>

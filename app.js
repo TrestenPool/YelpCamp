@@ -3,6 +3,7 @@ const app = express();
 const path = require('path');
 const mongoose = require('mongoose');
 const method = require('method-override');
+const ejsMate = require('ejs-mate');
 
 // connection to the mongodb
 mongoose.connect('mongodb://localhost:27017/yelp-camp', {useNewUrlParser:true})
@@ -29,8 +30,17 @@ app.set('view engine', 'ejs');
 app.use(express.urlencoded());
 // used for sending different methods in html form
 app.use(method('_method'));
+app.engine('ejs', ejsMate);
 
-
+const verifyPassword = (req, res, next) => {
+  const {password} = req.query;
+  if(password === 'Treste is super cool'){
+    return next();
+  }
+  else{
+    res.send('Incorrect password');
+  }
+}
 
 /**********************************/
 /************** ROUTES ***********/
@@ -40,7 +50,7 @@ const Campground = require('./models/campground');
 
 /** HOME PAGE **/
 app.get('/', (req, res) => {
-  res.render('campgrounds/home');
+  res.render('campgrounds/home')
 })
 
 /*** INDEX PAGE ***/
@@ -160,3 +170,9 @@ app.get('/campgrounds/:id', async (req,res) => {
     res.redirect('/campgrounds');
   })
 });
+
+
+/** 404 **/
+app.use( (req, res, next) => {
+  res.status(404).send("404, route not found");
+})
