@@ -5,33 +5,62 @@
     <div class="col-6 offset-3">
 
       <!-- Form -->
-      <form action="/campgrounds" method="POST">
+      <form action="/campgrounds" method="POST" novalidate class="validated-form">
         <!-- title -->
         <div class="mb-3">
           <label class="form-label" for="title">Title</label>
-          <input class="form-control" type="text" name="campground[title]" id="title">
+          <input class="form-control" type="text" name="campground[title]" id="title" required>
+
+          <!-- valid & invalid feedback -->
+          <div class="valid-feedback">
+            Nice Campground name!
+          </div>
+          <div class="invalid-feedback">
+            Campground title is required!
+          </div>
         </div>
         <!-- location -->
         <div class="mb-3">
           <label class="form-label" for="location">Location</label>
-          <input class="form-control" type="text" name="campground[location]" id="location">
+          <input class="form-control" type="text" name="campground[location]" id="location" required>
+
+          <!-- invalid feedback -->
+          <div class="invalid-feedback">
+            Location is required!
+          </div>
         </div>
         <!-- image -->
         <div class="mb-3">
           <label class="form-label" for="image">Image URL</label>
-          <input class="form-control" type="text" name="campground[image]" id="image">
+          <input class="form-control" type="text" name="campground[image]" id="image" required>
+
+          <!-- invalid feedback -->
+          <div class="invalid-feedback">
+            Image URL is required!
+          </div>
         </div>
         <!-- Description -->
         <div class="mb-3">
           <label class="form-label" for="description">Description</label>
-          <textarea class="form-control" type="text" name="campground[description]" id="description"></textarea>
+          <textarea class="form-control" type="text" name="campground[description]" id="description" required></textarea>
+
+          <!-- invalid feedback -->
+          <div class="invalid-feedback">
+             Description is required!
+          </div>
         </div>
 
         <!-- Price -->
         <div class="input-group mb-3">
           <span class="input-group-text">Price $</span>
-          <input type="number" min="1" step="any" class="form-control" name="campground[price]" aria-label="Amount (to the nearest dollar)">
+          <input type="number" min="1" step="any" class="form-control" name="campground[price]" aria-label="Amount (to the nearest dollar)" required>
+
+          <!-- invalid feedback -->
+          <div class="invalid-feedback">
+             Image URL is required!
+          </div>
         </div>
+
         <!-- Add campground button -->
         <div class="mb-3">
           <button class="btn btn-success">Add Campground</button>
@@ -47,3 +76,7 @@
 
     </div> 
   </div> <!-- End of row -->
+
+
+  <!-- include the js for the validation -->
+  <%- include('../partials/formValidator') %> 
