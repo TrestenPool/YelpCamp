@@ -78,6 +78,9 @@ router.patch('/:id/edit', validateCampground, catchAsync(async (req, res, next) 
   // update the campground in the db
   const campground = await Campground.findByIdAndUpdate({ _id: id }, { ...req.body.campground }, { runValidators: true, returnOriginal: false });
 
+  // campground was successfully updated
+  req.flash('success', 'Successfully updated the campground');
+
   // redirect to the show page for the campground
   res.redirect(`/campgrounds/${id}`);
 }));

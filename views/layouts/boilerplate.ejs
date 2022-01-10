@@ -10,13 +10,14 @@
 
 <!-- Body -->
 <body class="d-flex flex-column vh-100">
-  <!-- navbar -->
+  <!-- Navbar -->
   <%- include('../partials/navbar') %> 
 
-  <!-- Body -->
+  <!-- main -->
   <main class="container mt-5">
-  <%- include('../partials/flash') %> 
-    <%- body %> 
+    <!-- Flash messages if there is any -->
+    <%- include('../partials/flash') %> 
+      <%- body %> 
   </main>
 
   <!-- Footer -->

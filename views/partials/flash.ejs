@@ -1,6 +1,15 @@
+<!-- Print out success message -->
 <% if(success && success.length) { %> 
 <div class="alert alert-success alert-dismissible fade show" role="alert">
-  <strong>Campground Successfully created!</strong> 
+  <strong><%= success %> </strong> 
   <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
 </div>
 <% } %> 
+
+<!-- Print out error message -->
+<% if (error && error.length) { %>
+ <div class="alert alert-danger alert-dismissible fade show" role="alert">
+  <strong><%= error %> </strong> 
+  <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+</div> 
+<% } %>

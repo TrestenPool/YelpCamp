@@ -52,7 +52,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 /** Flash **/
 app.use( (req, res, next) => {
-  // set the local variables to each of the routes
+  // set the local variables for all routes to have success and error
   res.locals.success = req.flash('success');
   res.locals.error = req.flash('error');
   next();

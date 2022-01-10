@@ -13,8 +13,6 @@ const Campground = require('../models/campground');
 const Review = require('../models/review');
 
 
-
-
 /**********************************/
 /************** ROUTES ***********/
 /**********************************/
@@ -38,6 +36,8 @@ router.post('/', validateReview, catchAsync(async (req, res) => {
   await review.save();
   await campground.save();
 
+  req.flash('success', 'Successfully added review');
+
   // redirect to the show page of the 
   res.redirect(`/campgrounds/${req.params.id}`);
 }));
@@ -52,6 +52,8 @@ router.delete('/:reviewID', catchAsync( async (req,res) => {
 
   // removes the review from the review collection
   await Review.findByIdAndDelete(reviewID);
+
+  req.flash('success', 'Deleted review');
 
   // redirect to the show page
   res.redirect(`/campgrounds/${id}`);
