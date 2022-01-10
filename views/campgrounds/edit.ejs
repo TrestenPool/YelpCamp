@@ -51,7 +51,7 @@
         <!-- Price -->
         <div class="input-group mb-3">
           <span class="input-group-text">Price$</span>
-          <input type="number" min="1" step="any" class="form-control" name="campground[price]" aria-label="Amount (to the nearest dollar)" value="<%= camp.price %>" required>
+          <input type="number" min="0" step="any" class="form-control" name="campground[price]" aria-label="Amount (to the nearest dollar)" value="<%= camp.price %>" required>
           <!-- invalid feedback -->
           <div class="invalid-feedback">
             Campground price is required!
