@@ -53,7 +53,7 @@ router.delete('/:reviewID', catchAsync( async (req,res) => {
   // removes the review from the review collection
   await Review.findByIdAndDelete(reviewID);
 
-  req.flash('success', 'Deleted review');
+  req.flash('success', 'Successfully deleted review');
 
   // redirect to the show page
   res.redirect(`/campgrounds/${id}`);
