@@ -18,7 +18,7 @@ const Review = require('../models/review');
 /************** ROUTES ***********/
 /**********************************/
 
-// middleware for all campground routes
+// make sure a user is logged in for all except the index page
 router.use('/', (req, res, next) => {
   // the index page does not require the user to be logged in
   if(req.originalUrl === '/campgrounds'){
@@ -51,11 +51,16 @@ router.get('/new', (req, res) => {
 
 /*** POST REQUEST TO INSERT NEW CAMPGROUND ***/
 router.post('/', validateCampground, catchAsync(async (req, res, next) => {
+
+  // add the author associated with creating this campground
+  req.body.campground.author = req.user._id;
+
+  // attempt to save the campground in the db
   let campground = new Campground(req.body.campground);
   campground = await campground.save();
-  req.flash('success', 'Successfully created a new campground');
 
   // redirect to the show page 
+  req.flash('success', 'Successfully created a new campground');
   res.redirect(`/campgrounds/${campground._id}`);
 }));
 
@@ -123,7 +128,7 @@ router.get('/:id', catchAsync(async (req, res, next) => {
   const { id } = req.params;
 
   // search for the camp in the db
-  const camp = await Campground.findById({ _id: id }).populate('reviews');
+  const camp = await Campground.findById({ _id: id }).populate('reviews').populate('author');
 
   // campground was not found 
   if (!camp) {
@@ -135,7 +140,7 @@ router.get('/:id', catchAsync(async (req, res, next) => {
   }
   else {
     const {reviews} = camp;
-    res.render('campgrounds/show', { camp, reviews }); // render the show page
+    res.render('campgrounds/show', { camp, reviews}); // render the show page
   }
 }));
 

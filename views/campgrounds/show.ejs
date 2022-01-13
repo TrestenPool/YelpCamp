@@ -20,7 +20,10 @@
       <!-- list of items in the card -->
       <ul class="list-group list-group-flush">
         <li class="list-group-item text-muted">
-          <%= camp.location %>
+          Location: <%= camp.location %>
+        </li>
+        <li class="list-group-item text-muted">
+          Submitted by: <%= camp.author.username %> 
         </li>
         <li class="list-group-item">$<%= camp.price %>/night</li>
       </ul>

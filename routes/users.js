@@ -60,9 +60,9 @@ router.post('/login', passport.authenticate('local', {failureFlash: true, failur
 
   // take the user to the page they tried to visit before this
   if(req.session.returnTo){
+    // remove the returnTo key from the session 
     var previousUrl = req.session.returnTo;
     delete req.session.returnTo;
-    console.log(req.session);
     return res.redirect(previousUrl);
   }
   else{

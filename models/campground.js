@@ -27,7 +27,12 @@ const campgroundSchema = new mongoose.Schema({
     {
       type: mongoose.Schema.Types.ObjectId, ref: 'Review'
     }
-  ]
+  ],
+
+  author: {
+    type: mongoose.Schema.Types.ObjectId, ref: 'User'
+  }
+
 })
 
 // post middleware to remove all reviews from the review collection that are in the reviews array for the campground
