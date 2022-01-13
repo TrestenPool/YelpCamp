@@ -60,7 +60,10 @@ router.post('/login', passport.authenticate('local', {failureFlash: true, failur
 
   // take the user to the page they tried to visit before this
   if(req.session.returnTo){
-    return res.redirect(req.session.returnTo);
+    var previousUrl = req.session.returnTo;
+    delete req.session.returnTo;
+    console.log(req.session);
+    return res.redirect(previousUrl);
   }
   else{
     return res.redirect('/campgrounds');
