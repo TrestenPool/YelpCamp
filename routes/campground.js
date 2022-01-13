@@ -18,8 +18,18 @@ const Review = require('../models/review');
 /************** ROUTES ***********/
 /**********************************/
 
+// middleware for all campground routes
+router.use('/', (req, res, next) => {
+  // the index page does not require the user to be logged in
+  if(req.originalUrl === '/campgrounds'){
+    return next();
+  }
+
+  isLoggedIn(req, res, next);
+})
+
 /*** INDEX PAGE ***/
-router.get('/', isLoggedIn, catchAsync(async (req, res) => {
+router.get('/', catchAsync(async (req, res) => {
   // get all campgrounds, sort by title
   const campgrounds = await Campground.find({}).sort({ title: "ascending" })
 
@@ -35,12 +45,12 @@ router.get('/', isLoggedIn, catchAsync(async (req, res) => {
 }));
 
 /*** FORM TO CREATE A NEW CAMPGROUND ***/
-router.get('/new', isLoggedIn, (req, res) => {
+router.get('/new', (req, res) => {
   res.render('campgrounds/new');
 });
 
 /*** POST REQUEST TO INSERT NEW CAMPGROUND ***/
-router.post('/', isLoggedIn, validateCampground, catchAsync(async (req, res, next) => {
+router.post('/', validateCampground, catchAsync(async (req, res, next) => {
   let campground = new Campground(req.body.campground);
   campground = await campground.save();
   req.flash('success', 'Successfully created a new campground');
@@ -50,7 +60,7 @@ router.post('/', isLoggedIn, validateCampground, catchAsync(async (req, res, nex
 }));
 
 /*** FORM TO EDIT A CAMPGROUND ***/
-router.get('/:id/edit', isLoggedIn, catchAsync(async (req, res, next) => {
+router.get('/:id/edit', catchAsync(async (req, res, next) => {
   const { id } = req.params;
 
   // get the campground from the db
@@ -68,7 +78,7 @@ router.get('/:id/edit', isLoggedIn, catchAsync(async (req, res, next) => {
 }));
 
 /*** PATCH REQUEST TO EDIT A CAMPGROUND ***/
-router.patch('/:id/edit',  isLoggedIn, validateCampground, catchAsync(async (req, res, next) => {
+router.patch('/:id/edit', validateCampground, catchAsync(async (req, res, next) => {
   // get the campground id from the url parameters
   const { id } = req.params;
 
@@ -87,7 +97,7 @@ router.patch('/:id/edit',  isLoggedIn, validateCampground, catchAsync(async (req
 
 
 /*** DELETE CAMP ***/
-router.delete('/:id', isLoggedIn, catchAsync(async (req, res) => {
+router.delete('/:id', catchAsync(async (req, res) => {
   // get the id from the url parameters
   const { id } = req.params;
 
@@ -108,7 +118,7 @@ router.delete('/:id', isLoggedIn, catchAsync(async (req, res) => {
 }));
 
 /*** SHOW PAGE ***/
-router.get('/:id', isLoggedIn, catchAsync(async (req, res, next) => {
+router.get('/:id', catchAsync(async (req, res, next) => {
   // get the id from the url parameters
   const { id } = req.params;
 

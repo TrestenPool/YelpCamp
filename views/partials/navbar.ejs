@@ -5,7 +5,7 @@
       <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse" id="navbarNav">
-      <ul class="navbar-nav">
+      <ul class="navbar-nav me-auto">
         <!-- Home -->
         <li class="nav-item">
           <a class="nav-link" href="/">Home</a>
@@ -14,12 +14,32 @@
         <li class="nav-item">
           <a class="nav-link" href="/campgrounds">Campgrounds</a>
         </li>
-        <!--  -->
+        <!-- New Campground -->
         <li class="nav-item">
           <a class="nav-link" href="/campgrounds/new">New Campground</a>
         </li>
-
       </ul>
+
+      <!-- Login and logout -->
+      <ul class="navbar-nav ms-auto">
+        <!-- The user is not logged in -->
+        <% if (!currentUser) { %>
+          <li>
+            <a href="/register" class="nav-link">Register</a>
+          </li>
+          <li>
+            <a href="/login" class="nav-link">Login</a>
+          </li>
+        <% } %>
+
+        <!-- The user is already logged in -->
+        <% if (currentUser) { %>
+          <li>
+            <a href="/logout" class="nav-link">Logout</a>
+          </li>
+        <% } %>
+      </ul>
+
     </div>
   </div>
 </nav>

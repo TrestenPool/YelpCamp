@@ -99,4 +99,12 @@ module.exports.configuration = function(){
     next();
   })
 
+  /** Navbar register,login,logout **/
+  app.use( (req, res, next) => {
+    // pass the current user to all the views in case we need to use it 
+    res.locals.currentUser = req.user;
+    next();
+  })
+
+
 }// end of configuration
