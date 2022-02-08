@@ -26,14 +26,14 @@ module.exports = {
   campgroundRoutes, reviewRoutes, userRoutes
 }
 
-
+ 
 /*****************************************************************/
 /************************* CONFIGURATION *************************/
 /*****************************************************************/
 module.exports.configuration = function(){
 
   //configure mongo db
-  mongoose.connect('mongodb://localhost:27017/yelp-camp', { useNewUrlParser: true })
+  mongoose.connect('mongodb://127.0.0.1:27017/yelp-camp', { useNewUrlParser: true })
     .then(() => {
       console.log(`Connected to mongodb`);
     })
@@ -103,8 +103,7 @@ module.exports.configuration = function(){
   app.use( (req, res, next) => {
     // pass the current user to all the views in case we need to use it 
     res.locals.currentUser = req.user;
-    next();
+    return next();
   })
-
 
 }// end of configuration

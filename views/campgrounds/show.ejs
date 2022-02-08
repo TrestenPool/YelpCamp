@@ -10,7 +10,7 @@
       <!-- Title and Description -->
       <div class="card-body">
         <h5 class="card-title">
-          <%= camp.title %>
+          <%= camp.title %>admin
         </h5>
         <p class="card-text">
           <%= camp.description %>
@@ -28,13 +28,15 @@
         <li class="list-group-item">$<%= camp.price %>/night</li>
       </ul>
 
-      <!-- Edit and Delete button -->
-      <div class="card-body">
-        <a class="card-link btn btn-info" href="/campgrounds/<%= camp._id %>/edit">Edit</a>
-        <form class="d-inline" action="/campgrounds/<%= camp._id %>?_method=DELETE" method="POST">
-          <button class="btn btn-danger">Delete</button>
-        </form>
-      </div>
+      <!-- SHOW EDIT AND DELETE BUTTON IF the user is the author for the campground -->
+      <% if (currentUser && camp.author.equals(currentUser._id)) { %>
+        <div class="card-body">
+          <a class="card-link btn btn-info" href="/campgrounds/<%= camp._id %>/edit">Edit</a>
+          <form class="d-inline" action="/campgrounds/<%= camp._id %>?_method=DELETE" method="POST">
+            <button class="btn btn-danger">Delete</button>
+          </form>
+        </div>
+      <% } %>
 
       <!-- How long ago it was created -->
       <div class="card-footer text-muted" strictPopulate` option to false to override.>
@@ -42,40 +44,51 @@
       </div>
     </div>
 
-    <!-- Form to leave a review -->
-    <h2>Leave a Review!</h2>
-    <form action="/campgrounds/<%= camp._id %>/reviews" class="mb-3 validated-form" method="POST" novalidate>
-      <!-- Review rating slider -->
-      <div class="mb-3">
-        <label for="rating" class="form-label">Rating</label>
-        <input type="range" class="form-range" min="1" max="5" name="review[rating]">
-      </div>
-      <!-- Review body -->
-      <div class="mb-3">
-        <label class="form-label" for="body">Review</label>
-        <textarea class="form-control" name="review[body]" id="body" cols="30" rows="3" required></textarea>
-      </div>
-      <!-- Submit button -->
-      <button class="btn btn-success">Submit</button>
-    </form>
+  <!-- ONLY USERS THAT ARE LOGGED IN ARE ABLE TO LEAVE A REVIEW -->
+    <% if (currentUser) { %>
+      <h2>Leave a Review!</h2>
+      <form action="/campgrounds/<%= camp._id %>/reviews" class="mb-3 validated-form" method="POST" novalidate>
+        <!-- Review rating slider -->
+        <div class="mb-3">
+          <label for="rating" class="form-label">Rating</label>
+          <input type="range" class="form-range" min="1" max="5" name="review[rating]">
+        </div>
+        <!-- Review body -->
+        <div class="mb-3">
+          <label class="form-label" for="body">Review</label>
+          <textarea class="form-control" name="review[body]" id="body" cols="30" rows="3" required></textarea>
+        </div>
+        <!-- Submit button -->
+        <button class="btn btn-success">Submit</button>
+      </form>
+    <% } %>
 
   </div>
 
-  <!-- right half -->
+  <!-- RIGHT HALF FOR REVIEWS -->
   <div class="col-6">
     <h1 class="card-title">All Reviews</h1>
     <div class="mb-3">
+
+      <!-- Display all the reviews -->
       <% for(review of reviews) { %>
         <div class="card">
           <div class="mb-3 card-body">
             <h5 class="card-title">Rating: <%= review.rating %> </h5>
+            <div class="card-subtitle text-muted">
+              By: <%= review.author.username %> 
+            </div>
             <p class="card-text"><%= review.body %> </p>
-            <form action="/campgrounds/<%= camp._id %>/reviews/<%= review._id %>?_method=DELETE" method="POST" >
-              <button class="btn btn-sm btn-danger">Delete</button>
-            </form>
+            <!-- Show the Delete button if the user logged in is the author for the review -->
+            <% if ( currentUser && currentUser.equals(review.author) ) { %>
+              <form action="/campgrounds/<%= camp._id %>/reviews/<%= review._id %>?_method=DELETE" method="POST" >
+                <button class="btn btn-sm btn-danger">Delete</button>
+              </form>
+            <% } %>
           </div>
         </div>
       <% } %>
+
     </div>
   </div>
 

@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router({mergeParams: true});
-const {validateReview, validateCampground} = require('../utils/validation');
+const {validateCampground ,validateReview, isLoggedIn, isReviewAuthor} = require('../utils/middleware');
 
 /** REQUIRES **/
 const catchAsync = require('../utils/catchAsync');
@@ -18,32 +18,38 @@ const Review = require('../models/review');
 /**********************************/
 
 /** POST REQUEST TO INSERT A REVIEW **/
-router.post('/', validateReview, catchAsync(async (req, res) => {
-
-  // search for the campground by id
+router.post('/', isLoggedIn, validateReview, catchAsync(async (req, res) => {
+  // get the campground id
+  const {id} = req.params.id;
+  
+  // get the campground from the db
   const campground = await Campground.findById(req.params.id);
 
-  // campground not found
+  // the campground does not exist, throw error
   if (!campground) {
     throw new ExpressError(`Campground ID: ${req.params.id} was not found.`, 400);
   }
 
-  // create the new review and add it to the campground reviews array
+  // first create the review object
   const review = new Review(req.body.review);
+
+  // set the review author the user that is currently logged in
+  review.author = req.user._id;
+
+  // add the reviews to the campground reviews array
   campground.reviews.push(review);
 
-  // // save in the db
+  // save the reivew in the review collection, and re-save the campground with updated reviews array
   await review.save();
   await campground.save();
 
+  // redirect to the show page for the campground
   req.flash('success', 'Successfully added review');
-
-  // redirect to the show page of the 
   res.redirect(`/campgrounds/${req.params.id}`);
 }));
 
 /** DELETE REQUEST TO DELETE A REVIEW **/
-router.delete('/:reviewID', catchAsync( async (req,res) => {
+router.delete('/:reviewID', isLoggedIn, isReviewAuthor, catchAsync( async (req,res) => {
   // destructure parameters
   const {id, reviewID} = req.params;
 
@@ -53,6 +59,7 @@ router.delete('/:reviewID', catchAsync( async (req,res) => {
   // removes the review from the review collection
   await Review.findByIdAndDelete(reviewID);
 
+  // flash success message
   req.flash('success', 'Successfully deleted review');
 
   // redirect to the show page
