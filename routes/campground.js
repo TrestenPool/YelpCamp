@@ -17,26 +17,25 @@ const Review = require('../models/review');
 /************** ROUTES ***********/
 /**********************************/
 
-/*** INDEX PAGE ***/
-router.get('/', catchAsync(campgroundController.index));
+/** INDEX **/
+router.route('/')
+  .get(catchAsync(campgroundController.index))
+  .post(isLoggedIn ,validateCampground, catchAsync(campgroundController.handleNewCampground));
 
-/*** FORM TO CREATE A NEW CAMPGROUND ***/
-router.get('/new', isLoggedIn, campgroundController.renderNewForm);
+/** NEW CAMPGROUND **/
+router.route('/new')
+  .get(isLoggedIn, campgroundController.renderNewForm);
 
-/*** POST REQUEST TO INSERT NEW CAMPGROUND ***/
-router.post('/', isLoggedIn ,validateCampground, catchAsync(campgroundController.handleNewCampground));
 
-/*** FORM TO EDIT A CAMPGROUND ***/
-router.get('/:id/edit', isLoggedIn, isAuthor, catchAsync(campgroundController.renderEditForm));
+/** EDIT THE CAMPGROUND **/
+router.route('/:id/edit')
+  .get(isLoggedIn, isAuthor, catchAsync(campgroundController.renderEditForm))
+  .patch(isLoggedIn, isAuthor, validateCampground, catchAsync(campgroundController.handleEditCampground));
 
-/*** PATCH REQUEST TO EDIT A CAMPGROUND ***/
-router.patch('/:id/edit', isLoggedIn, isAuthor, validateCampground, catchAsync(campgroundController.handleEditCampground));
-
-/*** DELETE CAMP ***/
-router.delete('/:id', isLoggedIn, isAuthor, catchAsync(campgroundController.handleDeleteCampground));
-
-/*** SHOW PAGE ***/
-router.get('/:id', catchAsync(campgroundController.renderShowPage));
+/** RENDER/DELETE EXISTING CAMPGROUND **/
+router.route('/:id')
+  .get(catchAsync(campgroundController.renderShowPage))
+  .delete(isLoggedIn, isAuthor, catchAsync(campgroundController.handleDeleteCampground));
 
 // export the campground routes
 module.exports = router;

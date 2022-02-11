@@ -25,7 +25,7 @@ app.use('/campgrounds/:id/reviews', reviewRoutes);
 
 /* 404 route does not exist */
 app.all('*', (req, res, next) => {
-  const err = new ExpressError('Page not found', 404);
+  const err = new ExpressError('Route not found', 404);
   next(err);
 })
 

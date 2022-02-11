@@ -21,20 +21,15 @@ const userController = require('../controllers/users');
 /*************** ROUTES *************/
 /************************************/
 
-/******  REGISTER ******/
-/** Show the form **/
-router.get('/register', userController.renderRegisterForm);
+/** REGISTER */
+router.route('/register')
+  .get(userController.renderRegisterForm)
+  .post(catchAsync(userController.processRegisterForm));
 
-/** Process the form **/
-router.post('/register', catchAsync(userController.processRegisterForm));
-
-
-/******  LOGIN ******/
-/** Show the login page **/
-router.get('/login', catchAsync(userController.renderLoginPage));
-
-/** Process the login page **/
-router.post('/login', userController.processRegisterForm);
+/** LOGIN */
+router.route('/login')
+  .get(catchAsync(userController.renderLoginPage))
+  .post(passport.authenticate('local', {failureFlash: true, failureRedirect: '/login'}), catchAsync(userController.processLoginForm));
 
 /** LOGOUT **/
 router.get('/logout', userController.logout);

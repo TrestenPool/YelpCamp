@@ -36,7 +36,7 @@ module.exports.renderLoginPage = async(req, res) => {
   res.render('auth/login');
 }
 
-module.exports.processLoginForm = passport.authenticate('local', {failureFlash: true, failureRedirect: '/login'}), catchAsync(async(req, res) => {
+module.exports.processLoginForm = async(req, res) => {
   // flash message they will see if they were able to successfully login
   req.flash('success', 'Welcome back!!');
 
@@ -50,7 +50,7 @@ module.exports.processLoginForm = passport.authenticate('local', {failureFlash: 
   else{
     return res.redirect('/campgrounds');
   }
-})
+};
 
 module.exports.logout = (req, res) => {
   req.logOut();

@@ -1,4 +1,5 @@
 <% layout('layouts/boilerplate') %>
+<link rel="stylesheet" href="/stylesheets/stars.css">
 
 <div class="row">
   <!-- left Half -->
@@ -48,11 +49,19 @@
     <% if (currentUser) { %>
       <h2>Leave a Review!</h2>
       <form action="/campgrounds/<%= camp._id %>/reviews" class="mb-3 validated-form" method="POST" novalidate>
-        <!-- Review rating slider -->
-        <div class="mb-3">
-          <label for="rating" class="form-label">Rating</label>
-          <input type="range" class="form-range" min="1" max="5" name="review[rating]">
-        </div>
+        <!-- Review rating selector -->
+        <fieldset class="starability-basic">
+          <input type="radio" id="first-rate1" name="review[rating]" value="1" checked/>
+          <label for="first-rate1" title="Terrible">1 star</label>
+          <input type="radio" id="first-rate2" name="review[rating]" value="2" />
+          <label for="first-rate2" title="Not good">2 stars</label>
+          <input type="radio" id="first-rate3" name="review[rating]" value="3" />
+          <label for="first-rate3" title="Average">3 stars</label>
+          <input type="radio" id="first-rate4" name="review[rating]" value="4" />
+          <label for="first-rate4" title="Very good">4 stars</label>
+          <input type="radio" id="first-rate5" name="review[rating]" value="5" />
+          <label for="first-rate5" title="Amazing">5 stars</label>
+        </fieldset>
         <!-- Review body -->
         <div class="mb-3">
           <label class="form-label" for="body">Review</label>
@@ -74,11 +83,17 @@
       <% for(review of reviews) { %>
         <div class="card">
           <div class="mb-3 card-body">
-            <h5 class="card-title">Rating: <%= review.rating %> </h5>
+            <!-- REview body -->
+            <h5 class="card-title"><%= review.body %> </h5>
+            <!-- Star rating -->
+            <p class="starability-result" data-rating=<%= review.rating %>>
+              Rated: <%= review.rating %>  stars
+            </p>
+            <!-- Author of the review -->
             <div class="card-subtitle text-muted">
               By: <%= review.author.username %> 
             </div>
-            <p class="card-text"><%= review.body %> </p>
+
             <!-- Show the Delete button if the user logged in is the author for the review -->
             <% if ( currentUser && currentUser.equals(review.author) ) { %>
               <form action="/campgrounds/<%= camp._id %>/reviews/<%= review._id %>?_method=DELETE" method="POST" >

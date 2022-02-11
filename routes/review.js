@@ -25,7 +25,7 @@ const reviewController = require('../controllers/review');
 router.post('/', isLoggedIn, validateReview, catchAsync(reviewController.createReview));
 
 /** DELETE REQUEST TO DELETE A REVIEW **/
-router.delete('/:reviewID', isLoggedIn, isReviewAuthor, catchAsync());
+router.delete('/:reviewID', isLoggedIn, isReviewAuthor, catchAsync(reviewController.deleteReview));
 
 
 // export the router
