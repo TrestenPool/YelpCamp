@@ -1,15 +1,17 @@
 // campground object
 const Campground = require('../models/campground');
 
-
 /** Index function **/
 module.exports.index = async (req, res) => {
+  // get the campgrounds in ascending order
   const campgrounds = await Campground.find({}).sort({ title: "ascending" })
 
+  // no campgrounds were found
   if (!campgrounds) {
     campgrounds = {};
     res.render('campgrounds/index', { campgrounds });
   }
+  // pass the campgrounds that were found to the view to render
   else {
     res.render('campgrounds/index', { campgrounds });
   }
@@ -74,18 +76,19 @@ module.exports.renderShowPage = async (req, res, next) => {
   }
 }
 
-
-
-
 module.exports.handleNewCampground = async (req, res, next) => {
-
-  // add the author associated with creating this campground
-  req.body.campground.author = req.user._id;
-
-  // attempt to save the campground in the db
+  // make a new campground object
   let campground = new Campground(req.body.campground);
-  campground = await campground.save();
 
+  // save the newly created images to the campground object
+  campground.images = req.files.map(f => f.path);
+  
+  // add the author to the campground
+  campground.author = req.user._id;
+
+  // save the campground in the db
+  campground = await campground.save();
+  
   // redirect to the show page 
   req.flash('success', 'Successfully created a new campground');
   res.redirect(`/campgrounds/${campground._id}`);
@@ -95,14 +98,21 @@ module.exports.handleEditCampground = async (req, res, next) => {
   // get the campground id from the url parameters
   const { id } = req.params;
 
-  // update the campground in the db
-  const campground = await Campground.findByIdAndUpdate({ _id: id }, { ...req.body.campground }, { runValidators: true, returnOriginal: false });
+  // TODO: 
+  res.send(req.body.campground);
 
-  // campground was successfully updated
-  req.flash('success', 'Successfully updated the campground');
+  // remove all empty values from the images array
+  // let filtered = req.body.campground.images.filter(n => n);
+  // req.body.campground.images = filtered;
 
-  // redirect to the show page for the campground
-  res.redirect(`/campgrounds/${id}`);
+  // // update the campground in the db
+  // // const campground = await Campground.findByIdAndUpdate({ _id: id }, { ...req.body.campground }, { runValidators: true, returnOriginal: false });
+
+  // // campground was successfully updated
+  // req.flash('success', 'Successfully updated the campground');
+
+  // // redirect to the show page for the campground
+  // res.redirect(`/campgrounds/${id}`);
 }
 
 

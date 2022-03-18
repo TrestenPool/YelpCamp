@@ -64,7 +64,8 @@ module.exports.isReviewAuthor = async(req, res, next) => {
 /********** JOI VALIDATION ********/
 /**********************************/
 module.exports.validateCampground = (req, res, next) => {
-  // attemmpt to validate with the schema
+
+  // attempt to validate schema
   const { error } = campgroundSchema.validate(req.body);
 
   // there was an error in validation

@@ -5,7 +5,7 @@
     <div class="col-6 offset-3">
 
       <!-- Form -->
-      <form action="/campgrounds" method="POST" novalidate class="validated-form">
+      <form action="/campgrounds" method="POST" novalidate class="validated-form" enctype="multipart/form-data" >
 
         <!-- title -->
         <div class="mb-3">
@@ -30,16 +30,16 @@
             Location is required!
           </div>
         </div>
-        <!-- image -->
+        
+        <!-- images -->
         <div class="mb-3">
-          <label class="form-label" for="image">Image URL</label>
-          <input class="form-control" type="text" name="campground[image]" id="image" required>
-
+          <input class="form-file-input" type="file" name="campground[images]" id="image" multiple required>
           <!-- invalid feedback -->
           <div class="invalid-feedback">
             Image URL is required!
           </div>
         </div>
+
         <!-- Description -->
         <div class="mb-3">
           <label class="form-label" for="description">Description</label>

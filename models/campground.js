@@ -1,5 +1,8 @@
 const mongoose = require('mongoose');
+const Schema = mongoose.Schema;
 const Review = require('./review');
+const {cloudinary} = require('../cloudinary/index')
+
 
 /** Schema **/
 const campgroundSchema = new mongoose.Schema({
@@ -19,9 +22,12 @@ const campgroundSchema = new mongoose.Schema({
     type: String
   },
 
-  image:{
-    type: String
-  },
+  // array of images
+  images: [
+    {
+      type: String
+    }
+  ],
 
   reviews: [
     {
@@ -37,7 +43,8 @@ const campgroundSchema = new mongoose.Schema({
 
 // post middleware to remove all reviews from the review collection that are in the reviews array for the campground
 campgroundSchema.post('findOneAndDelete', async function(doc){
-  // a campground was successfully deleted and returned to us a query
+
+  // do cleanup on the document doc
   if(doc){
     // removes all the reviews that are in the reviews array for the doc
     await Review.remove({
@@ -45,8 +52,30 @@ campgroundSchema.post('findOneAndDelete', async function(doc){
         $in: doc.reviews
       }
     })
+
+    // delete the images from the cloudinary storage
+    for(imageSrc of doc.images){
+      let file = imageSrc.split('YelpCamp/')[1].split('.')[0];
+      let deleteSrc = 'YelpCamp/' + file;
+      cloudinary.uploader.destroy(
+          deleteSrc,
+          {
+              invalidate: true
+          }, 
+          function(error, result) {
+              // console.log('RESULTS ===', result, error)
+          }
+      );
+
+    }    
+
+    
   }
-})
+
+
+
+
+});
 
 // campground model
 module.exports = mongoose.model('Campground', campgroundSchema);

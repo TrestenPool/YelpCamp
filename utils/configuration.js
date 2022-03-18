@@ -1,3 +1,8 @@
+// require the environement variables if we are not in production
+if(process.env.NODE_ENV !== "production"){
+  require('dotenv').config();
+}
+
 /*** REQUIRE'S ***/
 const express = require('express');
 const app = express();
@@ -10,6 +15,9 @@ const catchAsync = require('./catchAsync');
 const cookieParser = require('cookie-parser');
 const expressSession = require('express-session');
 const flash = require('connect-flash');
+const https = require('https');
+const fs = require('fs');
+
 
 // passport
 const passport = require('passport');
@@ -20,6 +28,7 @@ const campgroundRoutes = require('../routes/campground');
 const reviewRoutes = require('../routes/review');
 const userRoutes = require('../routes/users');
 
+// export our variables
 module.exports = {
   express, app, path, mongoose, method, ejsMate, ExpressError, catchAsync, cookieParser, expressSession, flash, 
   passport, LocalStrategy, 
@@ -41,6 +50,16 @@ module.exports.configuration = function(){
       console.log(`MongoDB Error connecting to mongodb`);
       console.log(`${err}`);
     });
+
+  // configure https
+  https
+    .createServer(
+      {
+        key: fs.readFileSync("Openssl/server.key"),
+        cert: fs.readFileSync("Openssl/server.cert"),
+      },
+      app
+    )
 
   // set our app to listen for incoming connections
   const portNumber = 3000;

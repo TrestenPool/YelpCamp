@@ -7,6 +7,11 @@ const catchAsync = require('../utils/catchAsync');
 const ExpressError = require('../utils/ExpressError');
 const {isLoggedIn, isAuthor, validateCampground, validateReview} = require('../utils/middleware');
 
+// multer
+const multer  = require('multer')
+const {storage} = require('../cloudinary/index')
+const upload = multer({ storage })
+
 /**********************************/
 /********** MODELS ****************/
 /**********************************/
@@ -19,18 +24,21 @@ const Review = require('../models/review');
 
 /** INDEX **/
 router.route('/')
+  // index page
   .get(catchAsync(campgroundController.index))
-  .post(isLoggedIn ,validateCampground, catchAsync(campgroundController.handleNewCampground));
+  // post request to insert a new campground
+  .post(isLoggedIn, upload.array('campground[images]') , validateCampground, catchAsync(campgroundController.handleNewCampground));
 
-/** NEW CAMPGROUND **/
+/** RENDER NEW CAMPGROUND FORM **/
 router.route('/new')
   .get(isLoggedIn, campgroundController.renderNewForm);
-
 
 /** EDIT THE CAMPGROUND **/
 router.route('/:id/edit')
   .get(isLoggedIn, isAuthor, catchAsync(campgroundController.renderEditForm))
-  .patch(isLoggedIn, isAuthor, validateCampground, catchAsync(campgroundController.handleEditCampground));
+  .patch(isLoggedIn, isAuthor, catchAsync(campgroundController.handleEditCampground));
+  // .patch(isLoggedIn, isAuthor, validateCampground, catchAsync(campgroundController.handleEditCampground));
+
 
 /** RENDER/DELETE EXISTING CAMPGROUND **/
 router.route('/:id')

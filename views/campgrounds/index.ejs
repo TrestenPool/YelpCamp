@@ -1,13 +1,22 @@
   <% layout('layouts/boilerplate') %> 
   <h1>Index Page</h1>
+  
+
   <!-- list the campgrounds -->
   <ul>
+    <!-- Go through all the campgrounds -->
     <% for(camp of campgrounds) { %>
       <div class="card">
         <div class="row">
           <!-- card image -->
           <div class="col-md-4">
-            <img src="<%= camp.image %> " alt="" class="img-fluid">
+
+          <% if('images' in camp){ %>  
+           <% if(camp.images.length >= 1){ %>  
+            <img src="<%= camp.images[0] %> " alt="" class="img-fluid">
+           <% } %>  
+          <% } %>  
+
           </div>
           
           <!-- rest to fill -->

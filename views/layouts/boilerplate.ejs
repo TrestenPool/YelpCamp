@@ -30,6 +30,39 @@
   <!-- Used for validating forms -->
   <script src="/javascripts/validateForms.js"></script>
 
+  <!-- Jquery -->
+  <script src="/javascripts/jquery-3.6.0.min.js"></script>
+
+  <!-- Custom jquery -->
+  <script>
+    
+    $(document).ready(function(){
+      // Delete button has been pressed
+      $('#deleteButton').click(function() {
+
+        // get the item to deletes id
+        var toDelete = $(".active").attr("id");
+        var result = '#'+toDelete;
+
+        // delete the item from the carosouel
+        $('.active').remove();
+
+        // delete the hidden element 
+        $(result).remove();
+
+        // set the next image to be active
+        $('.carousel-item:first').addClass('active');
+      });
+
+      // files have been uploaded
+      $('#image').change(function() {
+
+      })
+
+    })    
+  </script>
+
+
 </body>
 
 </html>

@@ -28,14 +28,53 @@
           </div>
         </div>
 
-        <!-- image -->
+        <!-- images -->
         <div class="mb-3">
-          <label class="form-label" for="image">Image URL</label>
-          <input class="form-control" type="text" name="campground[image]" id="image" value="<%= camp.image %>" required>
-          <!-- invalid feedback -->
-          <div class="invalid-feedback">
-            Image URL is required!
+          <label class="form-label" for="image">Images</label>
+          <br>
+
+          <!-- Carosouel of images -->
+          <div id="carouselExampleControls" class="carousel slide" >
+            <div class="carousel-inner">
+
+              <!-- Place all the images for the campground in the carosouel -->
+              <% for( let index = 0; index < camp.images.length; index++) { %>
+                <div id="item<%= index %>" class="carousel-item<%= index == 0 ? ' active' : '' %>">
+                  <img src="<%= camp.images[index] %>" class="d-block w-100" alt="...">
+                </div>
+              <% } %>
+
+            </div>
+            
+            <!-- Previous and Next button -->
+            <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="prev">
+              <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+              <span class="visually-hidden">Previous</span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="next">
+              <span class="carousel-control-next-icon" aria-hidden="true"></span>
+              <span class="visually-hidden">Next</span>
+            </button>
           </div>
+          
+          <!-- Delete button -->
+          <button type="button" class="btn btn-danger" id="deleteButton">Delete Image</button>
+
+          <!-- END OF Carosouel of images -->
+        </div>
+
+        <!-- Add more images button -->
+        <div class="mb-3">
+          <label for="campground[images]">Add more images:</label>
+          <br>
+          
+          <!-- place all the existing images here, so when they submit the form, they will be submitted when the form is submitted  -->
+          <% for( let index = 0; index < camp.images.length; index++) { %>
+            <input id="item<%= index %>" type="hidden" name="campground[images]" value="<%= camp.images[index] %>">
+          <% } %>  
+
+          <!-- file upload button -->
+          <input class="form-file-input" type="file" name="campground[images]" id="image" multiple>
         </div>
 
         <!-- Description -->
