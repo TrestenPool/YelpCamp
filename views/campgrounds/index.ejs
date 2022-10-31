@@ -8,15 +8,12 @@
     <% for(camp of campgrounds) { %>
       <div class="card">
         <div class="row">
-          <!-- card image -->
+
+          <!-- campground thumbnail -->
           <div class="col-md-4">
-
-          <% if('images' in camp){ %>  
-           <% if(camp.images.length >= 1){ %>  
-            <img src="<%= camp.images[0] %> " alt="" class="img-fluid">
-           <% } %>  
-          <% } %>  
-
+            <% if(camp.images.length >= 1){ %>  
+            <img src="<%= camp.images[0].thumbnail %> " alt="" class="img-fluid">
+            <% } %>  
           </div>
           
           <!-- rest to fill -->

@@ -1,10 +1,12 @@
 // campground object
 const Campground = require('../models/campground');
+const {deleteFile} = require('../cloudinary/index');
+const { createReview } = require('./review');
 
 /** Index function **/
 module.exports.index = async (req, res) => {
   // get the campgrounds in ascending order
-  const campgrounds = await Campground.find({}).sort({ title: "ascending" })
+  let campgrounds = await Campground.find({}).sort({ title: "ascending" })
 
   // no campgrounds were found
   if (!campgrounds) {
@@ -39,7 +41,6 @@ module.exports.renderEditForm = (async (req, res, next) => {
     // render the edit page for the campground
     res.render('campgrounds/edit', { camp })
   }
-
 })
 
 /* Render campground show page */
@@ -95,24 +96,41 @@ module.exports.handleNewCampground = async (req, res, next) => {
 }
 
 module.exports.handleEditCampground = async (req, res, next) => {
-  // get the campground id from the url parameters
+  // get the campground id from the url
   const { id } = req.params;
 
-  // TODO: 
-  res.send(req.body.campground);
+  // Add the images the user has added to the campground images array
+  if(req.files.length >= 1){
+    newFilesArray = [];
 
-  // remove all empty values from the images array
-  // let filtered = req.body.campground.images.filter(n => n);
-  // req.body.campground.images = filtered;
+    req.files.forEach((file) => {
+      newFilesArray.push({"url":file['path'] , "filename": file['originalname']});
+    })
+    req.body.campground.images = req.body.campground.images.concat(newFilesArray);
+  }
 
-  // // update the campground in the db
-  // // const campground = await Campground.findByIdAndUpdate({ _id: id }, { ...req.body.campground }, { runValidators: true, returnOriginal: false });
+  // get the original images from the campground
+  let originalCampground = await Campground.findById({_id: id});
+  let originalImages = originalCampground.images;
 
-  // // campground was successfully updated
-  // req.flash('success', 'Successfully updated the campground');
+  let allCampgroundImageUrls = req.body.campground.images.map(imgObject => imgObject['url']);
 
-  // // redirect to the show page for the campground
-  // res.redirect(`/campgrounds/${id}`);
+  // see if any of the original images have been deleted, if it has been deleted, it will be deleted in cloudinary as well
+  for(ogImage of originalImages){
+    if( allCampgroundImageUrls.includes(ogImage['url']) == false ){
+      console.log(`Handle edit controller Deleting: ${ogImage}`);
+      deleteFile(ogImage);
+    }
+  }
+
+  // update the campground in the db
+  const campground = await Campground.findByIdAndUpdate({ _id: id }, { ...req.body.campground }, { runValidators: true, returnOriginal: false });
+
+  // campground was successfully updated
+  req.flash('success', 'Successfully updated the campground');
+
+  // redirect to the show page for the campground
+  res.redirect(`/campgrounds/${id}`);
 }
 
 

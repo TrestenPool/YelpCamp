@@ -3,9 +3,8 @@ const Joi = require('joi');
 const campground = require('../models/campground');
 
 /** Campground Schema **/
-module.exports.campgroundSchema = Joi.object({
-  campground: Joi.object({
-
+module.exports.campgroundSchema = 
+  Joi.object({
     location: Joi.string()
       .required(),
 
@@ -20,9 +19,14 @@ module.exports.campgroundSchema = Joi.object({
       .min(0),
 
     images: Joi.array()
+      .items({
+        url: Joi.string().required(),
+        filename: Joi.string().required(),
+      })
 
-  }).required(),
-});
+  }).required();
+
+
 
 /** Review Schema **/
 module.exports.reviewSchema = Joi.object({

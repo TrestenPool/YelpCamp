@@ -14,28 +14,36 @@ const {app} = require('./utils/configuration');
 /**********************************/
 /************** ROUTES ***********/
 /**********************************/
-//home route
-app.get('/', (req,res) => {
-  res.render('home');
-})
 
-app.use('/', userRoutes);
+/** Home route **/
+app.get('/', (req, res, next) => {
+  res.redirect('/campgrounds');
+  // res.render('home');
+});
+
+/** Campground routes */
 app.use('/campgrounds', campgroundRoutes);
+
+/** User routes **/
+app.use('/', userRoutes);
+
+/** Review routes **/
 app.use('/campgrounds/:id/reviews', reviewRoutes);
 
 /* 404 route does not exist */
 app.all('*', (req, res, next) => {
+  // Setup the err and send to the custom error handler
   const err = new ExpressError('Route not found', 404);
-  next(err);
-})
+  next(err); 
+});
 
-/** Custom Error hander **/
+/** Custom Error handler **/
 app.use((err, req, res, next) => {
-  // no error was supplied
+
   if (!err.message) {
     err.message = "Default Error message";
   }
-  // no error status was supplied
+
   if (!err.status) {
     err.status = 500;
   }

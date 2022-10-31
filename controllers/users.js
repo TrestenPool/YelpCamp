@@ -33,6 +33,14 @@ module.exports.processRegisterForm = async (req, res) => {
 }
 
 module.exports.renderLoginPage = async(req, res) => {
+  // try to get the page the user was at last and return them there. If none specified, then go back to index page for campgrounds
+
+  // check if the user is already logged in 
+  if(req.isAuthenticated()){
+    req.flash('error', 'You are already signed in... If you want to sign in with a different account you must logout then login');
+    return res.redirect('/campgrounds');
+  }
+
   res.render('auth/login');
 }
 

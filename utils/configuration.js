@@ -18,7 +18,6 @@ const flash = require('connect-flash');
 const https = require('https');
 const fs = require('fs');
 
-
 // passport
 const passport = require('passport');
 const LocalStrategy = require('passport-local');
@@ -96,6 +95,7 @@ module.exports.configuration = function(){
 
   // sessions
   app.use(expressSession(sessionOptions));
+
   // serve the public directory
   app.use(express.static(path.join(__dirname, '../public')));
 

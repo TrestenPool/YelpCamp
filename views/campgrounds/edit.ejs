@@ -4,11 +4,13 @@
     <div class="col-6 offset-3">
 
   <!-- Form -->
-    <form action="/campgrounds/<%= camp._id %>/edit?_method=PATCH" method="POST" novalidate class="validated-form">
-        <!-- title -->
+    <form action="/campgrounds/<%= camp._id %>/edit?_method=PATCH" method="POST" novalidate class="validated-form" enctype="multipart/form-data" >
+
+        <!------------------- Campground Title --------------->
         <div class="mb-3">
           <label class="form-label" for="title">Title</label>
           <input class="form-control" type="text" name="campground[title]" id="title" value="<%= camp.title %>" required>
+
           <!-- valid & invalid feedback -->
           <div class="valid-feedback">
             Nice Campground name!
@@ -16,34 +18,38 @@
           <div class="invalid-feedback">
             Campground title is required!
           </div>
-        </div>
 
-        <!-- location -->
+        </div>
+        <!--------------------------------------------------->
+
+        <!------------------- Campground Location --------------->
         <div class="mb-3">
           <label class="form-label" for="location">Location</label>
           <input class="form-control" type="text" name="campground[location]" id="location" value="<%= camp.location %>" required>
+
           <!-- invalid feedback -->
           <div class="invalid-feedback">
             Campground location is required!
           </div>
         </div>
+        <!--------------------------------------------------->
 
-        <!-- images -->
+        <!------------------- Campground Images --------------->
         <div class="mb-3">
+
           <label class="form-label" for="image">Images</label>
           <br>
 
-          <!-- Carosouel of images -->
-          <div id="carouselExampleControls" class="carousel slide" >
-            <div class="carousel-inner">
+          <!-- Carousel of images -->
+          <div id="carouselExampleControls" class="carousel slide" data-bs-ride="carousel">
 
-              <!-- Place all the images for the campground in the carosouel -->
+            <!-- All current images for the campground -->
+            <div class="carousel-inner">
               <% for( let index = 0; index < camp.images.length; index++) { %>
                 <div id="item<%= index %>" class="carousel-item<%= index == 0 ? ' active' : '' %>">
-                  <img src="<%= camp.images[index] %>" class="d-block w-100" alt="...">
+                  <img src="<%= camp.images[index].thumbnail %>" class="d-block w-100 img-fluid" style="width: 100%; height: 800px; object-fit: fit;">
                 </div>
               <% } %>
-
             </div>
             
             <!-- Previous and Next button -->
@@ -51,33 +57,42 @@
               <span class="carousel-control-prev-icon" aria-hidden="true"></span>
               <span class="visually-hidden">Previous</span>
             </button>
+
             <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="next">
               <span class="carousel-control-next-icon" aria-hidden="true"></span>
               <span class="visually-hidden">Next</span>
             </button>
           </div>
           
-          <!-- Delete button -->
+          <!-- Delete image button, there is code in the boilerplate to handle this -->
           <button type="button" class="btn btn-danger" id="deleteButton">Delete Image</button>
 
-          <!-- END OF Carosouel of images -->
         </div>
+        <!--------------------------------------------------->
 
-        <!-- Add more images button -->
+        <!-- Bottom portion of the page -->
         <div class="mb-3">
-          <label for="campground[images]">Add more images:</label>
-          <br>
-          
-          <!-- place all the existing images here, so when they submit the form, they will be submitted when the form is submitted  -->
+
+          <!-- All of the existing images will be placed here, whenever they are deleted from the carousel they will be deleted from here too -->
           <% for( let index = 0; index < camp.images.length; index++) { %>
-            <input id="item<%= index %>" type="hidden" name="campground[images]" value="<%= camp.images[index] %>">
+            <!-- FIXME: figure out how to send the campground.image correctly!! -->
+            <input id="item<%= index %>" type="hidden" name="campground[images][<%= index %>][url]" value="<%= camp.images[index].url %>" >
+            <input id="item<%= index %>" type="hidden" name="campground[images][<%= index %>][filename]" value="<%= camp.images[index].filename %>" >
           <% } %>  
 
-          <!-- file upload button -->
-          <input class="form-file-input" type="file" name="campground[images]" id="image" multiple>
-        </div>
 
-        <!-- Description -->
+          <!-- new image upload -->
+          <div class="mb-3">
+            <label>Add more images:</label>
+            <br>
+            <input class="form-control" type="file" name="newImages" id="image" multiple>
+          </div>
+
+        </div>
+        <!--------------------------------------------------->
+
+
+        <!------------------- Campground Description --------------->
         <div class="mb-3">
           <label class="form-label" for="description">Description</label>
           <textarea class="form-control" type="text" name="campground[description]" id="description" required><%= camp.description %></textarea>
@@ -86,8 +101,9 @@
             Campground description is required!
           </div>
         </div>
+        <!--------------------------------------------------->
 
-        <!-- Price -->
+        <!------------------- Campground Price --------------->
         <div class="input-group mb-3">
           <span class="input-group-text">Price$</span>
           <input type="number" min="0" step="any" class="form-control" name="campground[price]" aria-label="Amount (to the nearest dollar)" value="<%= camp.price %>" required>
@@ -96,17 +112,21 @@
             Campground price is required!
           </div>
         </div>
+        <!--------------------------------------------------->
 
-        <!-- Edit campground button -->
+        <!------------------- Edit campground button --------------->
           <button class="btn btn-success">Edit Campground</button>
-      </form>
+        <!--------------------------------------------------->
 
-      <!-- Back button -->
+      </form> <!-- End of the form-->
+
+      <!------------------- Back button --------------->
       <div class="mb-3">
         <form action="/campgrounds/<%= camp._id %>">
           <button class="btn btn-secondary">Back</button>
         </form>
       </div>
+      <!--------------------------------------------------->
 
     </div> 
-  </div> <!-- End of row -->
+  </div> 

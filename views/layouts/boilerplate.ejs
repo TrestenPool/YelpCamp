@@ -36,27 +36,34 @@
   <!-- Custom jquery -->
   <script>
     
+    // javascript functions to be ran
     $(document).ready(function(){
+      
       // Delete button has been pressed
       $('#deleteButton').click(function() {
 
-        // get the item to deletes id
+        // gets the active image id
         var toDelete = $(".active").attr("id");
         var result = '#'+toDelete;
 
-        // delete the item from the carosouel
+        // remove the active image from the carosuel
         $('.active').remove();
-
-        // delete the hidden element 
+        
+        // remove the two hidden elements for the image 
         $(result).remove();
+        $(result).remove();
+        
+        // remove the delete button since there are no more images in the carosouel
+        if( $('.carousel-item').length == 0 ){
+          $('#deleteButton').remove();
+        }
 
-        // set the next image to be active
+        // set the the next image in the carousel to be active
         $('.carousel-item:first').addClass('active');
       });
 
       // files have been uploaded
       $('#image').change(function() {
-
       })
 
     })    
