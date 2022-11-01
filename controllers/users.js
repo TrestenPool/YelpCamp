@@ -60,9 +60,12 @@ module.exports.processLoginForm = async(req, res) => {
   }
 };
 
-module.exports.logout = (req, res) => {
-  req.logOut();
-  req.flash('success', 'You have successfully logged out');
-
-  res.redirect('/campgrounds');
-}
+module.exports.logout = (req, res, next) => {
+  req.logOut(function(err){
+    if(err){
+      return next(err);
+    }
+    req.flash('success', 'You have successfully logged out');
+    res.redirect('/campgrounds');
+  });
+};
