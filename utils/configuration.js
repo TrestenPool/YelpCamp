@@ -30,6 +30,26 @@ const userRoutes = require('../routes/users');
 // mongo sanitization
 const mongoSanitize = require('express-mongo-sanitize');
 
+// helmet
+const helmet = require("helmet");
+
+// The commented ones will break the app by disabling the map and images
+// app.use(helmet.contentSecurityPolicy());
+// app.use(helmet.crossOriginEmbedderPolicy());
+app.use(helmet.crossOriginOpenerPolicy());
+app.use(helmet.crossOriginResourcePolicy());
+app.use(helmet.dnsPrefetchControl());
+app.use(helmet.expectCt());
+app.use(helmet.frameguard());
+app.use(helmet.hidePoweredBy());
+app.use(helmet.hsts());
+app.use(helmet.ieNoOpen());
+app.use(helmet.noSniff());
+app.use(helmet.originAgentCluster());
+app.use(helmet.permittedCrossDomainPolicies());
+app.use(helmet.referrerPolicy());
+app.use(helmet.xssFilter());
+
 
 // export our variables
 module.exports = {
@@ -87,11 +107,13 @@ module.exports.configuration = function(){
 
   // session configuration
   const sessionOptions = {
+    name: 'session',
     secret: 'thisisnotagoodsecret',
     resave: false,
-    saveUninitialized: false,
+    saveUninitialized: true,
     cookie: {
-      secure: false,
+      // secure: true,
+      httpOnly: true,
       expires: Date.now() + 1000 * 60 * 60 * 24 * 7,
       maxAge: 1000 * 60 * 60 * 24 * 7
     },

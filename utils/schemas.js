@@ -32,10 +32,10 @@ const Joi = BaseJoi.extend(extension)
 module.exports.campgroundSchema = 
   Joi.object({
     location: Joi.string()
-      .required(),
+      .required().escapeHTML(),
 
     description: Joi.string()
-      .required(),
+      .required().escapeHTML(),
 
     title: Joi.string()
       .required().escapeHTML(),
