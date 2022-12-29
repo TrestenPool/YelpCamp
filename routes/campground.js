@@ -30,8 +30,6 @@ router.route('/')
   // inserts a new campground. campground[images] will be uploaded to the cloudinary site
   .post(isLoggedIn, upload.array('campground[images]') , validateCampground, catchAsync(campgroundController.handleNewCampground));
 
-
-
 /** RENDER NEW CAMPGROUND FORM **/
 router.route('/new')
   .get(isLoggedIn, campgroundController.renderNewForm);

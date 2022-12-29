@@ -6,16 +6,19 @@ const { campgroundSchema, reviewSchema } = require('./schemas');
 
 /* CHECK IF THE USER IS LOGGED IN */
 module.exports.isLoggedIn = async(req, res, next) => {
-  // caches the website to return back to after logging in
-  req.session.returnTo = req.originalUrl;
+  
+  // FIXME: Have the user be redirected to the url they were previously at before they attempted to perform an action that required them to be logged in
+  // the url that the user will be redirected to upon successful login
+  // req.session.returnTo = req.originalUrl;
 
   // the user is not logged in, redirect to login page
   if(!req.isAuthenticated()){
     req.flash('error', 'you must be signed in');
-    return res.redirect('/login');
+    res.redirect('/login');
   }
+  // the user is already logged in
   else{
-    return next();
+    next();
   }
 }
 
@@ -64,6 +67,12 @@ module.exports.isReviewAuthor = async(req, res, next) => {
 /********** JOI VALIDATION ********/
 /**********************************/
 module.exports.validateCampground = (req, res, next) => {
+  
+  // remove any null values from the images array
+  if(req.body.campground.images != null){
+    req.body.campground.images = Object.values(req.body.campground.images);
+  }
+
   // attempt to validate schema
   const { error } = campgroundSchema.validate(req.body.campground);
 
@@ -76,6 +85,7 @@ module.exports.validateCampground = (req, res, next) => {
   else {
     next();
   }
+
 }
 
 module.exports.validateReview = (req, res, next) => {

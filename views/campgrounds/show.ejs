@@ -47,13 +47,23 @@
 
       <!-- list of items in the card -->
       <ul class="list-group list-group-flush">
+        
+        <!-- Location -->
         <li class="list-group-item text-muted">
           Location: <%= camp.location %>
+          <!-- mapbox map -->
+          <div id='map'></div>
         </li>
+
+        <!-- Author name -->
         <li class="list-group-item text-muted">
           Submitted by: <%= camp.author.username %> 
         </li>
-        <li class="list-group-item">$<%= camp.price %>/night</li>
+        <!-- Campground price -->
+        <li class="list-group-item">
+          $<%= camp.price %>/night
+        </li>
+
       </ul>
 
         <div class="card-body">
@@ -140,3 +150,12 @@
   </div>
 
 </div>
+
+<!-- mapbox js -->
+<script>
+  const mapToken = '<%= process.env.MAPBOX_TOKEN %>';
+  const camp_coordinates = [<%= camp.geometry.coordinates %>];
+  const campground = <%- JSON.stringify(camp) %>;
+</script>
+
+<script src="/javascripts/showPageMap.js"></script>

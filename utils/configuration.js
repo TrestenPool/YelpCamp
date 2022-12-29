@@ -31,7 +31,7 @@ const userRoutes = require('../routes/users');
 module.exports = {
   express, app, path, mongoose, method, ejsMate, ExpressError, catchAsync, cookieParser, expressSession, flash, 
   passport, LocalStrategy, 
-  campgroundRoutes, reviewRoutes, userRoutes
+  campgroundRoutes, reviewRoutes, userRoutes,
 }
 
  
@@ -87,10 +87,10 @@ module.exports.configuration = function(){
     resave: false,
     saveUninitialized: false,
     cookie: {
-      httpOnly: true,
+      secure: false,
       expires: Date.now() + 1000 * 60 * 60 * 24 * 7,
       maxAge: 1000 * 60 * 60 * 24 * 7
-    }
+    },
   };
 
   // sessions

@@ -33,15 +33,16 @@ module.exports.processRegisterForm = async (req, res) => {
 }
 
 module.exports.renderLoginPage = async(req, res) => {
-  // try to get the page the user was at last and return them there. If none specified, then go back to index page for campgrounds
-
   // check if the user is already logged in 
   if(req.isAuthenticated()){
     req.flash('error', 'You are already signed in... If you want to sign in with a different account you must logout then login');
-    return res.redirect('/campgrounds');
+    res.redirect('/campgrounds');
   }
-
-  res.render('auth/login');
+  // the user is not logged in yet, render the login page
+  else{
+    req.session.save();
+    res.render('auth/login');
+  }
 }
 
 module.exports.processLoginForm = async(req, res) => {
@@ -50,7 +51,6 @@ module.exports.processLoginForm = async(req, res) => {
 
   // redirect the user to the page they visited before this
   if(req.session.returnTo){
-    // remove the returnTo key from the session 
     var previousUrl = req.session.returnTo;
     delete req.session.returnTo;
     return res.redirect(previousUrl);
@@ -58,11 +58,21 @@ module.exports.processLoginForm = async(req, res) => {
   else{
     return res.redirect('/campgrounds');
   }
+
 };
 
 module.exports.logout = (req, res) => {
-  req.logOut();
-  req.flash('success', 'You have successfully logged out');
+  // attempt to logout
+  req.logOut(function (err){
+    // there was an error logging out, redirect to the home page
+    if(err){
+      req.flash('error', 'There was an error logging out of your account!!');
+      res.redirect('/campgrounds');
+    }
+    else{
+      req.flash('success', 'You have successfully logged out');
+      res.redirect('/campgrounds');
+    }
+  })
 
-  res.redirect('/campgrounds');
 }

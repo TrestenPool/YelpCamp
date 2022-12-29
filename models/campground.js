@@ -6,16 +6,35 @@ const { string } = require('joi');
 
 // https://res.cloudinary.com/udemy-colt-steele-course/image/upload/w_2000,h_2000/v1652224579/YelpCamp/a1ljxnc6mgpgnygisutf
 
+/*** Image Schema ****/
 const imageSchema = new mongoose.Schema({
   url: String,
   filename: String
 })
 
+// virtual property for images
 imageSchema.virtual('thumbnail').get(function() {
-  return this.url.replace('/upload', '/upload/w_500,h_500');
+  // return this.url.replace('/upload', '/upload/w_500,h_500');
+  return this.url.replace('/upload', '/upload/c_fit,w_400,h_400');
 })
 
-/** Schema **/
+
+// Schema for the location point
+const pointSchema = new mongoose.Schema({
+  type: {
+    type: String,
+    enum: ['Point'],
+    required: true
+  },
+  coordinates: {
+    type: [Number],
+    required: true
+  }
+});
+
+const opts = { toJSON: {virtuals: true}};
+
+/** Campground Schema **/
 const campgroundSchema = new mongoose.Schema({
   title: {
     type: String
@@ -33,20 +52,31 @@ const campgroundSchema = new mongoose.Schema({
     type: String
   },
 
+  geometry: {
+    type: pointSchema,
+    required: true
+  },
+
   // new way
   images: [imageSchema],
 
   reviews: [
     {
-      // like foreign key
+      // refers to the Review Collection
       type: mongoose.Schema.Types.ObjectId, ref: 'Review'
     }
   ],
 
   author: {
+    // refers to the User collection
     type: mongoose.Schema.Types.ObjectId, ref: 'User'
-  }
+  },
+}, opts)
 
+// virtual for the campground popup markup
+campgroundSchema.virtual('properties.popUpMarkup').get(function () {
+  const popUpMarkup = `<strong><a href="/campgrounds/${this._id}">${this.title}</a><strong><p>${this.description.substring(0, 20)}</p>`;
+  return popUpMarkup ;
 })
 
 // middleware to be ran when a findOneAndDelete is performed on the campground
@@ -55,6 +85,7 @@ campgroundSchema.post('findOneAndDelete', async function(doc){
 
   // do cleanup on the document doc
   if(doc){
+
     // removes all the reviews that are in the reviews array for the doc
     await Review.remove({
       _id: {
@@ -72,7 +103,7 @@ campgroundSchema.post('findOneAndDelete', async function(doc){
               invalidate: true
           }, 
           function(error, result) {
-              console.log('RESULTS ===', result, error)
+              // console.log('RESULTS ===', result, error)
           }
       );
 

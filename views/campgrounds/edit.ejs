@@ -75,7 +75,6 @@
 
           <!-- All of the existing images will be placed here, whenever they are deleted from the carousel they will be deleted from here too -->
           <% for( let index = 0; index < camp.images.length; index++) { %>
-            <!-- FIXME: figure out how to send the campground.image correctly!! -->
             <input id="item<%= index %>" type="hidden" name="campground[images][<%= index %>][url]" value="<%= camp.images[index].url %>" >
             <input id="item<%= index %>" type="hidden" name="campground[images][<%= index %>][filename]" value="<%= camp.images[index].filename %>" >
           <% } %>  

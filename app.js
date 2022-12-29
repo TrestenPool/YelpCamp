@@ -1,5 +1,5 @@
 /** Configure our app **/
-const {configuration} = require('./utils/configuration');
+const {configuration, app} = require('./utils/configuration');
 configuration();
 
 // get all the routes
@@ -9,16 +9,15 @@ const campgroundRoutes = require('./routes/campground');
 
 // requires
 const ExpressError = require('./utils/ExpressError');
-const {app} = require('./utils/configuration');
+const session = require('express-session');
 
 /**********************************/
 /************** ROUTES ***********/
 /**********************************/
 
 /** Home route **/
-app.get('/', (req, res, next) => {
-  res.redirect('/campgrounds');
-  // res.render('home');
+app.get(['/', '/home'], (req, res, next) => {
+  res.render('home');
 });
 
 /** Campground routes */

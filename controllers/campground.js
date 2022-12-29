@@ -3,6 +3,13 @@ const Campground = require('../models/campground');
 const {deleteFile} = require('../cloudinary/index');
 const { createReview } = require('./review');
 
+// mapbox 
+const mbxClient = require('@mapbox/mapbox-sdk');
+const mabBoxToken = process.env.MAPBOX_TOKEN;
+const baseClient = mbxClient({ accessToken: mabBoxToken });
+const mbxGeocoding = require('@mapbox/mapbox-sdk/services/geocoding');
+const geocoder = mbxGeocoding(baseClient);
+
 /** Index function **/
 module.exports.index = async (req, res) => {
   // get the campgrounds in ascending order
@@ -77,15 +84,32 @@ module.exports.renderShowPage = async (req, res, next) => {
   }
 }
 
+/* Create a new campgrond */
 module.exports.handleNewCampground = async (req, res, next) => {
   // make a new campground object
   let campground = new Campground(req.body.campground);
 
-  // save the newly created images to the campground object
-  campground.images = req.files.map(f => f.path);
-  
+  // append the newly created files to the campground.images object array
+  req.files.forEach( (file) => {
+    campground.images.push({
+      "url": file['path'],
+      "filename": file['originalname']
+    })
+  })
+
   // add the author to the campground
   campground.author = req.user._id;
+
+  // add the location to the campground
+  const geoData = await geocoder.forwardGeocode(
+    {
+      query: campground.location,
+      limit: 1
+    }
+  ).send()
+
+  // Assign the campground location to the GeoJson
+  campground.geometry = geoData.body.features[0].geometry;
 
   // save the campground in the db
   campground = await campground.save();
@@ -99,10 +123,14 @@ module.exports.handleEditCampground = async (req, res, next) => {
   // get the campground id from the url
   const { id } = req.params;
 
+  // There are no images
+  if('images' in req.body.campground === false){
+    req.body.campground.images = []
+  }
+
   // Add the images the user has added to the campground images array
   if(req.files.length >= 1){
     newFilesArray = [];
-
     req.files.forEach((file) => {
       newFilesArray.push({"url":file['path'] , "filename": file['originalname']});
     })
