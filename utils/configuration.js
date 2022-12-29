@@ -27,6 +27,10 @@ const campgroundRoutes = require('../routes/campground');
 const reviewRoutes = require('../routes/review');
 const userRoutes = require('../routes/users');
 
+// mongo sanitization
+const mongoSanitize = require('express-mongo-sanitize');
+
+
 // export our variables
 module.exports = {
   express, app, path, mongoose, method, ejsMate, ExpressError, catchAsync, cookieParser, expressSession, flash, 
@@ -125,5 +129,10 @@ module.exports.configuration = function(){
     res.locals.currentUser = req.user;
     return next();
   })
+
+  /** Mongo Sanitzization **/
+  app.use(mongoSanitize({
+    replaceWith: '_'
+  }));
 
 }// end of configuration
