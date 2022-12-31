@@ -69,8 +69,9 @@ module.exports.configuration = function(){
       app
     )
 
-  // set our app to listen for incoming connections
-  const portNumber = 3000;
+  // PORT will be set by Heroku, or default to 3000
+  const portNumber = process.env.PORT || 3000;
+  
   app.listen(portNumber, () => {
     console.log(`Listening on port ${portNumber}`);
   })
@@ -154,7 +155,7 @@ module.exports.configuration = function(){
       "https://cdnjs.cloudflare.com",
       "https://cdn.jsdelivr.net",
   ];
-  // append url to this list of css libararies
+  // append url to this list of css libraries
   const styleSrcUrls = [
       "https://kit-free.fontawesome.com",
       "https://stackpath.bootstrapcdn.com",
