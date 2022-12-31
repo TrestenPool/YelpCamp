@@ -17,67 +17,24 @@ const expressSession = require('express-session');
 const flash = require('connect-flash');
 const https = require('https');
 const fs = require('fs');
-
 // passport
 const passport = require('passport');
 const LocalStrategy = require('passport-local');
-
 // routes
 const campgroundRoutes = require('../routes/campground');
 const reviewRoutes = require('../routes/review');
 const userRoutes = require('../routes/users');
-
 // mongo sanitization
 const mongoSanitize = require('express-mongo-sanitize');
-
 // helmet
 const helmet = require("helmet");
+// mongo store
+const mongoStore = require('connect-mongo')
 
 
-const scriptSrcUrls = [
-    "https://stackpath.bootstrapcdn.com",
-    "https://api.tiles.mapbox.com",
-    "https://api.mapbox.com",
-    "https://kit.fontawesome.com",
-    "https://cdnjs.cloudflare.com",
-    "https://cdn.jsdelivr.net",
-];
-const styleSrcUrls = [
-    "https://kit-free.fontawesome.com",
-    "https://stackpath.bootstrapcdn.com",
-    "https://api.mapbox.com",
-    "https://api.tiles.mapbox.com",
-    "https://fonts.googleapis.com",
-    "https://use.fontawesome.com",
-    "https://cdn.jsdelivr.net"
-];
-const connectSrcUrls = [
-    "https://api.mapbox.com",
-    "https://*.tiles.mapbox.com",
-    "https://events.mapbox.com",
-];
-const fontSrcUrls = [];
-app.use(
-    helmet.contentSecurityPolicy({
-        directives: {
-            defaultSrc: [],
-            connectSrc: ["'self'", ...connectSrcUrls],
-            scriptSrc: ["'unsafe-inline'", "'self'", ...scriptSrcUrls],
-            styleSrc: ["'self'", "'unsafe-inline'", ...styleSrcUrls],
-            workerSrc: ["'self'", "blob:"],
-            childSrc: ["blob:"],
-            objectSrc: [],
-            imgSrc: [
-                "'self'",
-                "blob:",
-                "data:",
-                "https://res.cloudinary.com/udemy-colt-steele-course/",
-                "https://images.unsplash.com",
-            ],
-            fontSrc: ["'self'", ...fontSrcUrls],
-        },
-    })
-);
+// db connection string
+const db_url = process.env.DB_URL;
+const secret = process.env.SECRET || 'thisisnotagoodsecret';
 
 
 // export our variables
@@ -86,7 +43,6 @@ module.exports = {
   passport, LocalStrategy, 
   campgroundRoutes, reviewRoutes, userRoutes,
 }
-
  
 /*****************************************************************/
 /************************* CONFIGURATION *************************/
@@ -94,7 +50,7 @@ module.exports = {
 module.exports.configuration = function(){
 
   //configure mongo db
-  mongoose.connect('mongodb://127.0.0.1:27017/yelp-camp', { useNewUrlParser: true })
+  mongoose.connect(db_url, { useNewUrlParser: true })
     .then(() => {
       console.log(`Connected to mongodb`);
     })
@@ -132,12 +88,12 @@ module.exports.configuration = function(){
   app.engine('ejs', ejsMate);
 
   // cookies
-  app.use(cookieParser('secret'));
+  app.use(cookieParser(secret));
 
   // session configuration
   const sessionOptions = {
-    name: 'session',
-    secret: 'thisisnotagoodsecret',
+    name: 'Yelp-Camp-Session',
+    secret: secret,
     resave: false,
     saveUninitialized: true,
     cookie: {
@@ -146,7 +102,10 @@ module.exports.configuration = function(){
       expires: Date.now() + 1000 * 60 * 60 * 24 * 7,
       maxAge: 1000 * 60 * 60 * 24 * 7
     },
-  };
+    store: mongoStore.create({
+      mongoUrl: db_url, 
+      touchAfter: 24*36000
+    })};
 
   // sessions
   app.use(expressSession(sessionOptions));
@@ -185,5 +144,53 @@ module.exports.configuration = function(){
   app.use(mongoSanitize({
     replaceWith: '_'
   }));
+
+  // append url to this list of js libraries
+  const scriptSrcUrls = [
+      "https://stackpath.bootstrapcdn.com",
+      "https://api.tiles.mapbox.com",
+      "https://api.mapbox.com",
+      "https://kit.fontawesome.com",
+      "https://cdnjs.cloudflare.com",
+      "https://cdn.jsdelivr.net",
+  ];
+  // append url to this list of css libararies
+  const styleSrcUrls = [
+      "https://kit-free.fontawesome.com",
+      "https://stackpath.bootstrapcdn.com",
+      "https://api.mapbox.com",
+      "https://api.tiles.mapbox.com",
+      "https://fonts.googleapis.com",
+      "https://use.fontawesome.com",
+      "https://cdn.jsdelivr.net"
+  ];
+  // append url to this list of api domains
+  const connectSrcUrls = [
+      "https://api.mapbox.com",
+      "https://*.tiles.mapbox.com",
+      "https://events.mapbox.com",
+  ];
+  const fontSrcUrls = [];
+  app.use(
+      helmet.contentSecurityPolicy({
+          directives: {
+              defaultSrc: [],
+              connectSrc: ["'self'", ...connectSrcUrls],
+              scriptSrc: ["'unsafe-inline'", "'self'", ...scriptSrcUrls],
+              styleSrc: ["'self'", "'unsafe-inline'", ...styleSrcUrls],
+              workerSrc: ["'self'", "blob:"],
+              childSrc: ["blob:"],
+              objectSrc: [],
+              imgSrc: [
+                  "'self'",
+                  "blob:",
+                  "data:",
+                  "https://res.cloudinary.com/udemy-colt-steele-course/",
+                  "https://images.unsplash.com",
+              ],
+              fontSrc: ["'self'", ...fontSrcUrls],
+          },
+      })
+  );
 
 }// end of configuration
