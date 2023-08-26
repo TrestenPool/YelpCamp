@@ -55,7 +55,7 @@ module.exports.configuration = function(){
      useNewUrlParser: true ,
      ssl: true,
      sslValidate: true,
-     sslCA: `./global-bundle.pem`
+     sslCA: `global-bundle.pem`
     })
     .then(() => {
       console.log(`Connected to mongodb`);
