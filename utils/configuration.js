@@ -50,12 +50,18 @@ module.exports = {
 module.exports.configuration = function(){
 
   //configure mongo db
-  mongoose.connect(db_url, { useNewUrlParser: true })
+  mongoose.connect(db_url, 
+    {
+     useNewUrlParser: true ,
+     ssl: true,
+     sslValidate: true,
+     sslCA: `./global-bundle.pem`
+    })
     .then(() => {
       console.log(`Connected to mongodb`);
     })
     .catch((err) => {
-      console.log(`MongoDB Error connecting to mongodb`);
+      console.log(`There was an error connecting to MongoDB 1`);
       console.log(`${err}`);
     });
 
