@@ -1,64 +1,52 @@
-const express = require('express')
-const app = express()
-const port = 8080
+/** Configure our app **/
+const {configuration, app} = require('./utils/configuration');
+configuration();
 
-app.get('/', (req, res) => {
-  res.send('Hello World!')
-})
+// get all the routes
+const userRoutes = require('./routes/users');
+const reviewRoutes = require('./routes/review');
+const campgroundRoutes = require('./routes/campground');
 
-app.listen(port, () => {
-  console.log(`Example app listening on port ${port}`)
-})
+// requires
+const ExpressError = require('./utils/ExpressError');
+const session = require('express-session');
 
-// /** Configure our app **/
-// const {configuration, app} = require('./utils/configuration');
-// configuration();
+/**********************************/
+/************** ROUTES ***********/
+/**********************************/
 
-// // get all the routes
-// const userRoutes = require('./routes/users');
-// const reviewRoutes = require('./routes/review');
-// const campgroundRoutes = require('./routes/campground');
+/** Home route **/
+app.get(['/', '/home'], (req, res, next) => {
+  res.render('home');
+});
 
-// // requires
-// const ExpressError = require('./utils/ExpressError');
-// const session = require('express-session');
+/** Campground routes */
+app.use('/campgrounds', campgroundRoutes);
 
-// /**********************************/
-// /************** ROUTES ***********/
-// /**********************************/
+/** User routes **/
+app.use('/', userRoutes);
 
-// /** Home route **/
-// app.get(['/', '/home'], (req, res, next) => {
-//   res.render('home');
-// });
+/** Review routes **/
+app.use('/campgrounds/:id/reviews', reviewRoutes);
 
-// /** Campground routes */
-// app.use('/campgrounds', campgroundRoutes);
+/* 404 route does not exist */
+app.all('*', (req, res, next) => {
+  // Setup the err and send to the custom error handler
+  const err = new ExpressError('Route not found', 404);
+  next(err); 
+});
 
-// /** User routes **/
-// app.use('/', userRoutes);
+/** Custom Error handler **/
+app.use((err, req, res, next) => {
 
-// /** Review routes **/
-// app.use('/campgrounds/:id/reviews', reviewRoutes);
+  if (!err.message) {
+    err.message = "Default Error message";
+  }
 
-// /* 404 route does not exist */
-// app.all('*', (req, res, next) => {
-//   // Setup the err and send to the custom error handler
-//   const err = new ExpressError('Route not found', 404);
-//   next(err); 
-// });
+  if (!err.status) {
+    err.status = 500;
+  }
 
-// /** Custom Error handler **/
-// app.use((err, req, res, next) => {
-
-//   if (!err.message) {
-//     err.message = "Default Error message";
-//   }
-
-//   if (!err.status) {
-//     err.status = 500;
-//   }
-
-//   // render the error template with the error and error status
-//   res.status(err.status).render('error', { err });
-// });
+  // render the error template with the error and error status
+  res.status(err.status).render('error', { err });
+});
