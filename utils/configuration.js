@@ -75,11 +75,10 @@ module.exports.configuration = function(){
   //     app
   //   )
 
-  console.log("made it this far")
 
   // PORT will be set by Heroku, or default to 3000
   // const portNumber = process.env.PORT || 3000;
-  const portNumber = 80
+  const portNumber = 8080
   
   app.listen(portNumber, () => {
     console.log(`Listening on port ${portNumber}`);
