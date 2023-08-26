@@ -4,7 +4,6 @@ TODO.txt
 .env
 notes.txt
 api_routes.Rest
-global-bundle.pem
 
 # Elastic Beanstalk Files
 .elasticbeanstalk/*
