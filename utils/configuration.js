@@ -49,31 +49,32 @@ module.exports = {
 /*****************************************************************/
 module.exports.configuration = function(){
 
-  //configure mongo db
-  mongoose.connect(db_url, 
-    {
-     useNewUrlParser: true ,
-     ssl: true,
-     sslValidate: true,
-     sslCA: `/home/ec2-user/global-bundle.pem`
+
+  mongoose.connect(connectionString, {
+    ssl: true,
+    sslValidate: true,
+    useNewUrlParser: true ,
+    tlsCAFile: path.join(__dirname, './global-bundle.pem'),
+    keepAlive: true
+  })
+    .then( (response) => {
+      console.log("Connected to MongoDB");
     })
-    .then(() => {
-      console.log(`Connected to mongodb`);
+    .catch( (error) => {
+      console.log(`There was an error connecting to mongo${error}`);
     })
-    .catch((err) => {
-      console.log(`There was an error connecting to MongoDB 2`);
-      console.log(`${err}`);
-    });
+
+
 
   // configure https
-  // https
-  //   .createServer(
-  //     {
-  //       key: fs.readFileSync("Openssl/server.key"),
-  //       cert: fs.readFileSync("Openssl/server.cert"),
-  //     },
-  //     app
-  //   )
+  https
+    .createServer(
+      {
+        key: fs.readFileSync("Openssl/server.key"),
+        cert: fs.readFileSync("Openssl/server.cert"),
+      },
+      app
+    )
 
 
   // PORT will be set by Heroku, or default to 3000
