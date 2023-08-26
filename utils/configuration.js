@@ -50,7 +50,7 @@ module.exports = {
 module.exports.configuration = function(){
 
 
-  mongoose.connect(connectionString, {
+  mongoose.connect(db_url, {
     ssl: true,
     sslValidate: true,
     useNewUrlParser: true ,
