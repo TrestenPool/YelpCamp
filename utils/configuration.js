@@ -67,14 +67,14 @@ module.exports.configuration = function(){
 
 
   // configure https
-  https
-    .createServer(
-      {
-        key: fs.readFileSync("Openssl/server.key"),
-        cert: fs.readFileSync("Openssl/server.cert"),
-      },
-      app
-    )
+  // https
+  //   .createServer(
+  //     {
+  //       key: fs.readFileSync("Openssl/server.key"),
+  //       cert: fs.readFileSync("Openssl/server.cert"),
+  //     },
+  //     app
+  //   )
 
 
   // PORT will be set by Heroku, or default to 3000
