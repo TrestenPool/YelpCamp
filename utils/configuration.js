@@ -55,28 +55,31 @@ module.exports.configuration = function(){
      useNewUrlParser: true ,
      ssl: true,
      sslValidate: true,
-     sslCA: `global-bundle.pem`
+     sslCA: `/home/ec2-user/global-bundle.pem`
     })
     .then(() => {
       console.log(`Connected to mongodb`);
     })
     .catch((err) => {
-      console.log(`There was an error connecting to MongoDB 1`);
+      console.log(`There was an error connecting to MongoDB 2`);
       console.log(`${err}`);
     });
 
   // configure https
-  https
-    .createServer(
-      {
-        key: fs.readFileSync("Openssl/server.key"),
-        cert: fs.readFileSync("Openssl/server.cert"),
-      },
-      app
-    )
+  // https
+  //   .createServer(
+  //     {
+  //       key: fs.readFileSync("Openssl/server.key"),
+  //       cert: fs.readFileSync("Openssl/server.cert"),
+  //     },
+  //     app
+  //   )
+
+  console.log("made it this far")
 
   // PORT will be set by Heroku, or default to 3000
-  const portNumber = process.env.PORT || 3000;
+  // const portNumber = process.env.PORT || 3000;
+  const portNumber = 80
   
   app.listen(portNumber, () => {
     console.log(`Listening on port ${portNumber}`);
