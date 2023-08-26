@@ -2,35 +2,16 @@ const express = require('express')
 const app = express()
 const port = 8080
 
-app.get('/', (req, res) => {
-  res.send('Hello World!')
-})
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`)
 })
 
+app.get('/', (req, res) => {
+  res.send('Hello World!')
+})
+
 console.log('Server running at http://127.0.0.1:' + port + '/');
-
-var MongoClient = require('mongodb').MongoClient,fs = require('fs');
-var ca = [fs.readFileSync("global-bundle.pem")];
-var connection_string = "mongodb://tresten:tresten-password@docdb-2023-08-26-21-17-31.ckpy8z21smjh.us-east-2.docdb.amazonaws.com:27017/?tls=true&tls&retryWrites=false";
-
-MongoClient.connect(
-        connection_string, {
-            sslValidate: true,
-            sslCA: ca,
-            useNewUrlParser: true
-        },
-        function (err,client) {
-            console.log(err+" , "+ client);
-        })
-        .then( (response) => {
-          console.log(`connected to mongo`);
-        })
-        .catch( (error) => {
-          console.log(`Error connecting to mongo :( ${error}`);
-        })
 
 
 // /** Configure our app **/
