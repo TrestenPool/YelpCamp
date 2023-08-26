@@ -2,7 +2,6 @@ const express = require('express')
 const app = express()
 const port = 8080
 
-
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`)
 })
@@ -10,8 +9,25 @@ app.listen(port, () => {
 app.get('/', (req, res) => {
   res.send('Hello World!')
 })
-
 console.log('Server running at http://127.0.0.1:' + port + '/');
+
+
+const mongoose = require('mongoose');
+const path = require('path');
+// const connectionString = "mongodb://tresten:tresten-password@docdb-2023-08-26-21-17-31.ckpy8z21smjh.us-east-2.docdb.amazonaws.com:27017/?tls=true&tlsCAFile=global-bundle.pem&retryWrites=false"
+const connectionString = "mongodb://tresten:tresten-password@docdb-2023-08-26-21-17-31.ckpy8z21smjh.us-east-2.docdb.amazonaws.com:27017/?tls=true&tls&retryWrites=false"
+
+mongoose.connect(connectionString, {
+  tlsCAFile: path.join(__dirname, './global-bundle.pem'),
+  keepAlive: true
+})
+  .then( (response) => {
+    console.log("Connected to MongoDB");
+  })
+  .catch( (error) => {
+    console.log(`There was an error connecting to mongo${error}`);
+  })
+
 
 
 // /** Configure our app **/
